@@ -26,7 +26,7 @@ export const logoFilename = 'logo.png';
 export const ABOUT_FOLDER = '/about/';
 
 /** Nome do arquivo da foto da seção Sobre (deve estar em public/about/). */
-export const aboutImageFilename = 'sobre.jpg';
+export const aboutImageFilename = 'criadores.png';
 
 /** Imagem padrão quando banner/sobre não carregam. */
 export const DEFAULT_HERO_IMAGE = 'https://images.unsplash.com/photo-1594932224010-75f4393932fa?auto=format&fit=crop&q=80&w=2000';

@@ -13,7 +13,7 @@ export function AboutSection() {
           <div className="aspect-[3/4] md:aspect-auto md:min-h-[400px] bg-gray-200 overflow-hidden">
             <img
               src={`${ABOUT_FOLDER}${aboutImageFilename}`}
-              alt="Camisaria Stampô"
+              alt="Criadores Stampô"
               className="w-full h-full object-cover object-top"
               onError={(e) => {
                 e.target.onerror = null;
@@ -24,11 +24,10 @@ export function AboutSection() {
           <div className="bg-gray-100 flex items-center p-8 md:p-12">
             <div>
               <p className="text-brand-purple-dark/90 leading-relaxed text-sm md:text-base mb-4">
-                Com anos de experiência e tradição familiar, produzimos camisas com acabamento impecável e modelos
-                exclusivos para você.
+                Somos quatro amigos que resolveram botar a mão na massa e criar algo nosso. A Stampô nasceu dessa vontade de fazer peças com a nossa cara, estampas que a gente curte, qualidade que a gente veste.
               </p>
               <p className="text-brand-purple-dark/90 leading-relaxed text-sm md:text-base">
-                Do algodão egípcio aos botões de madrepérola, nossas camisas são desenvolvidas para encantar.
+                Cada peça que sai daqui é pensada por quem usa. Sem firula corporativa: só gente que quer dividir isso com você.
               </p>
             </div>
           </div>
