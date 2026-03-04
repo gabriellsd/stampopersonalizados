@@ -23,6 +23,9 @@ export const LOGO_FOLDER = '/logo/';
 /** Nome do arquivo da logo (deve estar em public/logo/). */
 export const logoFilename = 'logo.png';
 
+/** Logo para o rodapé (versão clara sobre fundo escuro). */
+export const footerLogoFilename = 'logo-versão-para-rodapé.png';
+
 export const ABOUT_FOLDER = '/about/';
 
 /** Nome do arquivo da foto da seção Sobre (deve estar em public/about/). */

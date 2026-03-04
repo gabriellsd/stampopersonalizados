@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { getProductImageList } from '../utils/product';
@@ -39,19 +40,26 @@ export function ProductModal() {
             >
               <ArrowLeft className="w-4 h-4" /> Catálogo
             </button>
-            <img
-              src={`${LOGO_FOLDER}${logoFilename}`}
-              alt={stampo.name}
-              className="h-7 w-auto object-contain"
-              onError={(e) => {
-                e.target.style.display = 'none';
-                const fallback = e.target.nextElementSibling;
-                if (fallback) fallback.style.display = 'inline';
-              }}
-            />
-            <span className="text-sm font-bold tracking-[0.35em] uppercase text-gray-300 hidden" aria-hidden="true">
-              {stampo.name}
-            </span>
+            <Link
+              to="/"
+              onClick={() => { closeModal(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              className="flex items-center"
+              aria-label="Voltar ao início"
+            >
+              <img
+                src={`${LOGO_FOLDER}${logoFilename}`}
+                alt={stampo.name}
+                className="h-7 w-auto object-contain"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  const fallback = e.target.nextElementSibling;
+                  if (fallback) fallback.style.display = 'inline';
+                }}
+              />
+              <span className="text-sm font-bold tracking-[0.35em] uppercase text-gray-300 hidden" aria-hidden="true">
+                {stampo.name}
+              </span>
+            </Link>
           </div>
           <div className="max-w-6xl mx-auto px-4 py-10 md:py-16 flex flex-col md:flex-row gap-10 md:gap-16">
             <div className="w-full md:w-1/2 flex-shrink-0 space-y-3">

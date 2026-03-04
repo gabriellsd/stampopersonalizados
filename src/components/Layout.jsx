@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MessageCircle, Instagram, Menu, X, ShoppingBag } from 'lucide-react';
-import { LOGO_FOLDER, logoFilename, stampo } from '../data/site';
+import { LOGO_FOLDER, logoFilename, footerLogoFilename, stampo } from '../data/site';
 import { navLinks, getNavHref } from '../data/nav';
 import { useCart } from '../context/CartContext';
 import { ProductModal } from './ProductModal';
@@ -42,7 +42,11 @@ export function Layout({ children }) {
       <nav className="fixed w-full z-40 transition-all duration-300 bg-white border-b border-stone-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-14 items-center">
-            <Link to="/" className="flex items-center h-9">
+            <Link
+              to="/"
+              onClick={() => { if (location.pathname === '/') window.scrollTo({ top: 0, behavior: 'smooth' }); setIsMenuOpen(false); }}
+              className="flex items-center h-9"
+            >
               <img
                 src={`${LOGO_FOLDER}${logoFilename}`}
                 alt={stampo.name}
@@ -130,9 +134,13 @@ export function Layout({ children }) {
         <div className="max-w-4xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-2">
-              <Link to="/" className="inline-block">
+              <Link
+                to="/"
+                onClick={() => { if (location.pathname === '/') window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className="inline-block"
+              >
                 <img
-                  src={`${LOGO_FOLDER}${logoFilename}`}
+                  src={`${LOGO_FOLDER}${footerLogoFilename}`}
                   alt={stampo.name}
                   className="h-10 w-auto object-contain max-w-[200px]"
                   onError={(e) => {
@@ -143,7 +151,7 @@ export function Layout({ children }) {
                 />
                 <span className="text-2xl font-bold tracking-widest uppercase text-white hidden" aria-hidden="true">{stampo.name}<span className="text-brand-purple/80">.</span></span>
               </Link>
-              <p className="text-brand-purple-light text-sm mt-3 max-w-sm">Camisaria masculina premium. Peças pensadas para durar e valorizar o seu estilo.</p>
+              <p className="text-brand-purple-light text-sm mt-3 max-w-sm">Coleção oversized e estampas personalizadas. Do primeiro clique ao seu pedido, a Stampô com você.</p>
             </div>
             <div>
               <h4 className="text-xs font-bold uppercase tracking-widest text-white mb-4">Links</h4>
