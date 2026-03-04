@@ -10,11 +10,11 @@ export function AboutSection() {
     <section id="about" className="py-16 md:py-20">
       <div ref={aboutRef} className="reveal max-w-6xl mx-auto px-4 sm:px-6">
         <div className="grid md:grid-cols-2 gap-0 md:gap-0 mb-16 md:mb-20">
-          <div className="aspect-[3/4] md:aspect-auto md:min-h-[400px] bg-gray-200 overflow-hidden">
+          <div className="aspect-[4/3] md:aspect-auto md:min-h-[400px] bg-gray-200 overflow-hidden">
             <img
               src={`${ABOUT_FOLDER}${aboutImageFilename}`}
               alt="Criadores Stampô"
-              className="w-full h-full object-cover object-top"
+              className="w-full h-full object-cover object-center md:object-top"
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = DEFAULT_HERO_IMAGE;
