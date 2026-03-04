@@ -2,42 +2,28 @@ import React, { useState, useRef, useEffect } from 'react';
 import { getProductImageList, PLACEHOLDER_IMAGE } from '../utils/product';
 import { fmt } from '../utils/format';
 
-const HOVER_CYCLE_MS = 2500;
+const CYCLE_MS = 3500;
 
 export function ProductCard({ product, onOpen }) {
   const [imageIndex, setImageIndex] = useState(0);
-  const intervalRef = useRef(null);
-
   const imageList = getProductImageList(product);
   const hasMultiple = imageList.length > 1;
 
-  const clearCycle = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    setImageIndex(0);
-  };
-
-  const startCycle = () => {
-    if (!hasMultiple) return;
-    clearCycle();
-    intervalRef.current = setInterval(() => {
+  useEffect(() => {
+    if (!hasMultiple || imageList.length === 0) return;
+    const id = setInterval(() => {
       setImageIndex((i) => (i + 1) % imageList.length);
-    }, HOVER_CYCLE_MS);
-  };
-
-  useEffect(() => () => clearCycle(), [product.id]);
+    }, CYCLE_MS);
+    return () => clearInterval(id);
+  }, [hasMultiple, imageList.length]);
 
   return (
     <button
       type="button"
       onClick={() => onOpen(product)}
-      onMouseEnter={startCycle}
-      onMouseLeave={clearCycle}
-      className="group text-left rounded-xl overflow-hidden border-2 border-brand-purple/20 bg-white hover:border-brand-purple/50 hover:shadow-lg hover:shadow-brand-purple/10 transition-all"
+      className="group text-left rounded-lg overflow-hidden border border-brand-purple/20 bg-white hover:border-brand-purple/40 hover:shadow-md transition-all"
     >
-      <div className="aspect-[3/4] overflow-hidden bg-gray-100 relative">
+      <div className="aspect-[4/5] overflow-hidden bg-gray-100 relative">
         <img
           src={imageList[imageIndex]}
           alt={product.name}
@@ -71,16 +57,16 @@ export function ProductCard({ product, onOpen }) {
           </div>
         )}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
-          <span className="bg-white text-gray-900 text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
-            Ver Detalhes
+          <span className="bg-white text-gray-900 text-[9px] font-semibold uppercase tracking-wider px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
+            Ver detalhes
           </span>
         </div>
       </div>
-      <div className="pt-4 pb-4 px-4">
-        <p className="text-brand-purple text-[9px] font-bold uppercase tracking-widest mb-1">
+      <div className="pt-3 pb-3 px-3">
+        <p className="text-brand-purple text-[9px] font-bold uppercase tracking-widest mb-0.5">
           {product.categoryLabel}
         </p>
-        <h3 className="font-bold text-sm leading-snug mb-2">{product.name}</h3>
+        <h3 className="font-bold text-xs leading-snug mb-1">{product.name}</h3>
         {product.originalPrice ? (
           <p className="font-semibold text-sm text-gray-800">
             R$ {fmt(product.price)}{' '}

@@ -46,9 +46,9 @@ export function AboutSection() {
             <div className="flex justify-center mb-4">
               <Shirt className="w-10 h-10 text-brand-purple-dark" strokeWidth={1.5} />
             </div>
-            <h3 className="font-bold text-lg text-brand-purple-dark mb-2">Feito para você</h3>
+            <h3 className="font-bold text-lg text-brand-purple-dark mb-2">Estampa personalizada</h3>
             <p className="text-gray-700 text-sm leading-relaxed">
-              Personalize sua camisa com suas iniciais, e escolha seu colarinho e punho favoritos.
+              Envie sua arte e estampamos na peça que você escolher. Você define o tipo de peça, onde estampar e o tamanho da estampa.
             </p>
           </div>
           <div>
