@@ -14,7 +14,7 @@ export const stampo = {
   whatsapp: whatsappNumber,
   whatsappDisplay: '(11) 99999-9999',
   email: 'contato@stampo.com.br',
-  instagram: 'https://www.instagram.com/stampo',
+  instagram: 'https://www.instagram.com/stampopersonalizados?igsh=c2F6anFieW5qbDg3&utm_source=qr',
   city: 'Brasil',
 };
 

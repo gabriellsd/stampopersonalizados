@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MessageCircle, Instagram, Menu, X, ShoppingBag } from 'lucide-react';
+import { Instagram, Menu, X, ShoppingBag } from 'lucide-react';
 import { LOGO_FOLDER, logoFilename, footerLogoFilename, stampo } from '../data/site';
 import { navLinks, getNavHref } from '../data/nav';
 import { useCart } from '../context/CartContext';
 import { ProductModal } from './ProductModal';
 import { CartDrawer } from './CartDrawer';
 import { Toast } from './Toast';
-import { FixedButtons } from './FixedButtons';
+import { FixedButtons, WhatsAppIcon } from './FixedButtons';
 
 export function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -171,7 +171,7 @@ export function Layout({ children }) {
                 rel="noopener noreferrer"
                 className="text-brand-purple-light hover:text-green-400 transition text-sm flex items-center gap-2"
               >
-                <MessageCircle className="w-4 h-4" /> WhatsApp
+                <WhatsAppIcon className="w-4 h-4" /> WhatsApp
               </a>
             </div>
           </div>
@@ -179,7 +179,7 @@ export function Layout({ children }) {
             <p className="text-white/90 text-xs">© {new Date().getFullYear()} {stampo.name}. Todos os direitos reservados.</p>
             <div className="flex gap-6">
               <a href={`https://wa.me/${stampo.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-white/90 hover:text-green-400 transition">
-                <MessageCircle className="w-6 h-6" />
+                <WhatsAppIcon className="w-6 h-6" />
               </a>
               <a href={stampo.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-white/90 hover:text-pink-400 transition">
                 <Instagram className="w-6 h-6" />
