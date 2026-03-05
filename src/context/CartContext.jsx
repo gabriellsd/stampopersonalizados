@@ -21,6 +21,8 @@ export function CartProvider({ children }) {
   const [modalProduct, setModalProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [toast, setToast] = useState({ show: false, msg: '' });
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [announcement, setAnnouncement] = useState('');
 
   useEffect(() => {
     try {
@@ -35,6 +37,12 @@ export function CartProvider({ children }) {
     } catch (_) {}
   }, [cart]);
 
+  useEffect(() => {
+    if (!announcement) return;
+    const t = setTimeout(() => setAnnouncement(''), 1500);
+    return () => clearTimeout(t);
+  }, [announcement]);
+
   const showToast = useCallback((msg) => {
     setToast({ show: true, msg });
     const t = setTimeout(() => setToast((prev) => ({ ...prev, show: false })), 2800);
@@ -44,6 +52,7 @@ export function CartProvider({ children }) {
   const openProduct = useCallback((product) => {
     setModalProduct(product);
     setSelectedSize(null);
+    setAnnouncement(`Aberto: ${product.name}`);
   }, []);
 
   const closeModal = useCallback(() => {
@@ -53,7 +62,10 @@ export function CartProvider({ children }) {
 
   const addToCart = useCallback(() => {
     if (!modalProduct || !selectedSize) return;
+    setAddingToCart(true);
     const key = `${modalProduct.id}_${selectedSize}`;
+    const name = modalProduct.name;
+    const size = selectedSize;
     setCart((prev) => {
       const existing = prev.find((i) => i.key === key);
       if (existing) {
@@ -71,9 +83,11 @@ export function CartProvider({ children }) {
         },
       ];
     });
-    showToast(`${modalProduct.name} (Tam. ${selectedSize}) adicionado!`);
+    setAnnouncement(`${name} (tamanho ${size}) adicionado ao carrinho`);
+    showToast(`${name} (Tam. ${size}) adicionado!`);
     closeModal();
     setCartOpen(true);
+    setTimeout(() => setAddingToCart(false), 400);
   }, [modalProduct, selectedSize, showToast, closeModal]);
 
   const changeQty = useCallback((key, delta) => {
@@ -125,9 +139,12 @@ export function CartProvider({ children }) {
     openProduct,
     closeModal,
     addToCart,
+    addingToCart,
     changeQty,
     clearCart,
     checkoutWhatsApp,
+    announcement,
+    setAnnouncement,
     SIZES,
     PLACEHOLDER_IMAGE,
     fmt,

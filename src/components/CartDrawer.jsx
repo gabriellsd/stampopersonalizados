@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { X, ShoppingBag, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
@@ -15,6 +15,28 @@ export function CartDrawer() {
     fmt,
     PLACEHOLDER_IMAGE,
   } = useCart();
+  const drawerRef = useRef(null);
+
+  useEffect(() => {
+    if (!cartOpen || !drawerRef.current) return;
+    const el = drawerRef.current;
+    const focusables = el.querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
+    const first = focusables[0];
+    if (first) first.focus();
+    const onKeyDown = (e) => {
+      if (e.key !== 'Tab') return;
+      const list = [...focusables];
+      const idx = list.indexOf(document.activeElement);
+      if (idx === -1) return;
+      if (e.shiftKey) {
+        if (idx === 0) { e.preventDefault(); list[list.length - 1].focus(); }
+      } else {
+        if (idx === list.length - 1) { e.preventDefault(); list[0].focus(); }
+      }
+    };
+    el.addEventListener('keydown', onKeyDown);
+    return () => el.removeEventListener('keydown', onKeyDown);
+  }, [cartOpen]);
 
   return (
     <>
@@ -26,9 +48,12 @@ export function CartDrawer() {
         aria-hidden
       />
       <div
+        ref={drawerRef}
         className={`fixed top-0 right-0 h-full w-full max-w-sm bg-white z-[70] shadow-2xl flex flex-col transition-transform duration-300 ease-out ${
           cartOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
+        aria-modal="true"
+        aria-label="Carrinho de compras"
       >
         <div className="px-6 py-5 border-b flex justify-between items-center">
           <div>

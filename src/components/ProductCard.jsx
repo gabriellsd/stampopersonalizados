@@ -1,13 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Heart } from 'lucide-react';
 import { getProductImageList, PLACEHOLDER_IMAGE } from '../utils/product';
 import { fmt } from '../utils/format';
+import { useFavorites } from '../context/FavoritesContext';
 
 const CYCLE_MS = 3500;
 
 export function ProductCard({ product, onOpen }) {
   const [imageIndex, setImageIndex] = useState(0);
+  const { isFavorite, toggle } = useFavorites();
   const imageList = getProductImageList(product);
   const hasMultiple = imageList.length > 1;
+  const fav = isFavorite(product.id);
 
   useEffect(() => {
     if (!hasMultiple || imageList.length === 0) return;
@@ -18,15 +22,25 @@ export function ProductCard({ product, onOpen }) {
   }, [hasMultiple, imageList.length]);
 
   return (
-    <button
-      type="button"
-      onClick={() => onOpen(product)}
-      className="group text-left rounded-lg overflow-hidden border border-brand-purple/20 bg-white hover:border-brand-purple/40 hover:shadow-md transition-all"
-    >
+    <div className="group relative text-left rounded-lg overflow-hidden border border-brand-purple/20 bg-white hover:border-brand-purple/40 hover:shadow-md transition-all">
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); toggle(product.id); }}
+        aria-label={fav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+        className="absolute top-3 right-3 z-20 p-1.5 rounded-full bg-white/90 shadow hover:bg-white transition hover:scale-110"
+      >
+        <Heart className={`w-4 h-4 ${fav ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+      </button>
+      <button
+        type="button"
+        onClick={() => onOpen(product)}
+        className="w-full text-left"
+      >
       <div className="aspect-[4/5] overflow-hidden bg-gray-100 relative">
         <img
           src={imageList[imageIndex]}
           alt={product.name}
+          loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => {
             e.target.onerror = null;
@@ -76,6 +90,7 @@ export function ProductCard({ product, onOpen }) {
           <p className="font-semibold text-sm text-gray-800">R$ {fmt(product.price)}</p>
         )}
       </div>
-    </button>
+      </button>
+    </div>
   );
 }

@@ -1,22 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Copy, Loader2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { getProductImageList } from '../utils/product';
-import { LOGO_FOLDER, logoFilename, stampo } from '../data/site';
+import { LOGO_FOLDER, logoFilename, stampo, siteUrl } from '../data/site';
+import { getProductImage } from '../utils/product';
+import { products } from '../data/products';
+import { WhatsAppIcon } from './FixedButtons';
 
 export function ProductModal() {
   const {
     modalProduct,
     closeModal,
+    openProduct,
     addToCart,
+    addingToCart,
     selectedSize,
     setSelectedSize,
+    showToast,
     SIZES,
     PLACEHOLDER_IMAGE,
     fmt,
   } = useCart();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const modalRef = useRef(null);
 
   const imageList = modalProduct ? getProductImageList(modalProduct) : [];
   const hasMultipleImages = imageList.length > 1;
@@ -25,6 +32,51 @@ export function ProductModal() {
     setSelectedImageIndex(0);
   }, [modalProduct?.id]);
 
+  useEffect(() => {
+    if (!modalProduct || !modalRef.current) return;
+    const el = modalRef.current;
+    const focusables = el.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    const first = focusables[0];
+    if (first) first.focus();
+    const onKeyDown = (e) => {
+      if (e.key !== 'Tab') return;
+      const list = [...focusables];
+      const idx = list.indexOf(document.activeElement);
+      if (idx === -1) return;
+      if (e.shiftKey) {
+        if (idx === 0) {
+          e.preventDefault();
+          list[list.length - 1].focus();
+        }
+      } else {
+        if (idx === list.length - 1) {
+          e.preventDefault();
+          list[0].focus();
+        }
+      }
+    };
+    el.addEventListener('keydown', onKeyDown);
+    return () => el.removeEventListener('keydown', onKeyDown);
+  }, [modalProduct?.id]);
+
+  const shareUrl = modalProduct ? `${siteUrl}/#collection` : '';
+  const shareText = modalProduct ? `Olha essa peça da Stampô: ${modalProduct.name} — R$ ${fmt(modalProduct.price)}` : '';
+
+  const relatedProducts = modalProduct
+    ? products.filter((p) => p.category === modalProduct.category && p.id !== modalProduct.id).slice(0, 3)
+    : [];
+
+  const handleCopyLink = () => {
+    if (!shareUrl) return;
+    navigator.clipboard?.writeText(shareUrl).then(() => showToast('Link copiado!')).catch(() => {});
+  };
+
+  const handleShareWhatsApp = () => {
+    if (!modalProduct) return;
+    const url = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+    window.open(url, '_blank');
+  };
+
   return (
     <div
       className={`fixed inset-0 bg-white z-[70] overflow-y-auto flex flex-col transition-all duration-300 ${
@@ -32,7 +84,7 @@ export function ProductModal() {
       }`}
     >
       {modalProduct && (
-        <>
+        <div ref={modalRef}>
           <div className="sticky top-0 bg-white/95 backdrop-blur-md px-6 py-4 border-b flex justify-between items-center z-10">
             <button
               onClick={closeModal}
@@ -61,12 +113,20 @@ export function ProductModal() {
               </span>
             </Link>
           </div>
+          <nav aria-label="Navegação" className="max-w-6xl mx-auto px-4 pt-6 text-xs text-gray-500">
+            <Link to="/" onClick={() => { closeModal(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand-purple">Início</Link>
+            <span className="mx-2">/</span>
+            <button type="button" onClick={closeModal} className="hover:text-brand-purple">Coleção</button>
+            <span className="mx-2">/</span>
+            <span className="text-gray-700 font-medium">{modalProduct.name}</span>
+          </nav>
           <div className="max-w-6xl mx-auto px-4 py-10 md:py-16 flex flex-col md:flex-row gap-10 md:gap-16">
             <div className="w-full md:w-1/2 flex-shrink-0 space-y-3">
               <img
                 src={imageList[selectedImageIndex] || imageList[0]}
                 alt={modalProduct.name}
                 className="w-full rounded-2xl shadow-xl object-cover aspect-[3/4]"
+                fetchPriority="high"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = PLACEHOLDER_IMAGE;
@@ -88,6 +148,7 @@ export function ProductModal() {
                       <img
                         src={src}
                         alt={`${modalProduct.name} ${i + 1}`}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           e.target.onerror = null;
@@ -111,6 +172,15 @@ export function ProductModal() {
                 <span className="text-lg line-through ml-2">R$ {fmt(modalProduct.originalPrice)}</span>
               )}
             </p>
+            <div className="flex items-center gap-2 mt-3">
+              <span className="text-[10px] uppercase tracking-widest text-gray-400">Compartilhar</span>
+              <button type="button" onClick={handleCopyLink} className="p-2 rounded-lg border border-gray-200 hover:border-brand-purple hover:text-brand-purple transition" aria-label="Copiar link">
+                <Copy className="w-4 h-4" />
+              </button>
+              <button type="button" onClick={handleShareWhatsApp} className="p-2 rounded-lg border border-gray-200 hover:border-green-500 hover:text-green-600 transition flex items-center gap-1" aria-label="Enviar por WhatsApp">
+                <WhatsAppIcon className="w-4 h-4" />
+              </button>
+            </div>
           </div>
           <div>
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Sobre a Peça</h4>
@@ -151,13 +221,44 @@ export function ProductModal() {
           <button
             type="button"
             onClick={addToCart}
-            className="w-full bg-gray-900 text-white py-5 rounded-xl font-bold hover:bg-gray-800 active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
+            disabled={!selectedSize || addingToCart}
+            className="w-full bg-gray-900 text-white py-5 rounded-xl font-bold hover:bg-gray-800 active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-3 text-sm uppercase tracking-widest disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            <ShoppingBag className="w-5 h-5" /> Adicionar ao Pedido
+            {addingToCart ? (
+              <><Loader2 className="w-5 h-5 animate-spin" /> Adicionando...</>
+            ) : (
+              <><ShoppingBag className="w-5 h-5" /> Adicionar ao Pedido</>
+            )}
           </button>
+          {relatedProducts.length > 0 && (
+            <div className="mt-10 pt-8 border-t border-gray-200">
+              <h4 className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-4">Você também pode gostar</h4>
+              <div className="flex gap-4 overflow-x-auto pb-2">
+                {relatedProducts.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => { setSelectedSize(null); openProduct(p); }}
+                    className="flex-shrink-0 w-28 text-left group"
+                  >
+                    <div className="aspect-[4/5] rounded-lg overflow-hidden bg-gray-100 border border-gray-200 group-hover:border-brand-purple/50 transition">
+                      <img
+                        src={getProductImage(p)}
+                        alt=""
+                        className="w-full h-full object-cover group-hover:scale-105 transition"
+                        onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER_IMAGE; }}
+                      />
+                    </div>
+                    <p className="text-xs font-semibold mt-1.5 truncate">{p.name}</p>
+                    <p className="text-xs text-brand-purple">R$ {fmt(p.price)}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-        </>
+        </div>
       )}
     </div>
   );

@@ -16,6 +16,9 @@ export const stampo = {
   email: 'contato@stampo.com.br',
   instagram: 'https://www.instagram.com/stampopersonalizados?igsh=c2F6anFieW5qbDg3&utm_source=qr',
   city: 'Brasil',
+  /** Opcional: exibido na página Contato */
+  address: '',
+  hours: 'Atendimento por WhatsApp e e-mail.',
 };
 
 export const LOGO_FOLDER = '/logo/';
@@ -33,3 +36,6 @@ export const aboutImageFilename = 'criadores.png';
 
 /** Imagem padrão quando banner/sobre não carregam. */
 export const DEFAULT_HERO_IMAGE = 'https://images.unsplash.com/photo-1594932224010-75f4393932fa?auto=format&fit=crop&q=80&w=2000';
+
+/** URL base do site (para Schema.org, sitemap, compartilhar). */
+export const siteUrl = import.meta.env.VITE_SITE_URL || 'https://site-stampo.vercel.app';

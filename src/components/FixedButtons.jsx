@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { stampo } from '../data/site';
+
+const SCROLL_SHOW_TOP_PX = 300;
 
 export const WhatsAppIcon = ({ className = 'w-7 h-7' }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
@@ -8,16 +10,27 @@ export const WhatsAppIcon = ({ className = 'w-7 h-7' }) => (
 );
 
 export function FixedButtons() {
+  const [showBackTop, setShowBackTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowBackTop(window.scrollY > SCROLL_SHOW_TOP_PX);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <>
-      <button
-        type="button"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        aria-label="Voltar ao topo"
-        className="fixed bottom-6 left-6 w-11 h-11 bg-brand-purple text-white rounded-full shadow-lg shadow-brand-purple/30 flex items-center justify-center z-30 hover:bg-brand-purple-dark transition"
-      >
-        <span className="text-lg leading-none">↑</span>
-      </button>
+      {showBackTop && (
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Voltar ao topo"
+          className="fixed bottom-6 left-6 w-11 h-11 bg-brand-purple text-white rounded-full shadow-lg shadow-brand-purple/30 flex items-center justify-center z-30 hover:bg-brand-purple-dark transition"
+        >
+          <span className="text-lg leading-none">↑</span>
+        </button>
+      )}
       <a
         href={`https://wa.me/${stampo.whatsapp}?text=Olá%20Stampô%2C%20gostaria%20de%20solicitar%20um%20orçamento!`}
         target="_blank"

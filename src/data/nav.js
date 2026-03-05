@@ -6,6 +6,7 @@ export const navLinks = [
   { name: 'Início', path: '/', hash: null },
   { name: 'Coleção', path: '/', hash: '#collection' },
   { name: 'Personalizadas', path: '/personalizadas', hash: null },
+  { name: 'Contato', path: '/contato', hash: null },
   { name: 'Sobre', path: '/', hash: '#about' },
   { name: 'FAQ', path: '/', hash: '#faq' },
 ];

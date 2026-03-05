@@ -16,11 +16,12 @@ export const customPlacementOptions = [
   { value: 'frente', label: 'Só frente' },
   { value: 'verso', label: 'Só verso' },
   { value: 'ambos', label: 'Frente e verso' },
+  { value: 'outro', label: 'Outro' },
 ];
 
 export const customArtSizeOptions = [
   { value: 'pequena', label: 'Pequena (até ~20 cm)' },
   { value: 'media', label: 'Média (~20–30 cm)' },
   { value: 'grande', label: 'Grande (acima de 30 cm)' },
-  { value: 'definir', label: 'A definir / enviar medida' },
+  { value: 'outro', label: 'Outro' },
 ];

@@ -25,3 +25,37 @@ html {
 .animate-marquee-rtl {
   animation: marquee-rtl 25s linear infinite;
 }
+
+/* Menu mobile: slide + fade */
+@keyframes menu-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.menu-mobile-enter {
+  animation: menu-slide-in 0.2s ease-out;
+}
+
+/* Contador do carrinho: leve bounce ao mudar */
+@keyframes cart-badge-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+.animate-cart-badge {
+  animation: cart-badge-pop 0.35s ease;
+}
+
+/* Transição suave ao trocar de página */
+.page-enter {
+  animation: page-fade-in 0.25s ease-out;
+}
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
