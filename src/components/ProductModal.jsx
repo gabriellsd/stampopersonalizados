@@ -23,10 +23,24 @@ export function ProductModal() {
     fmt,
   } = useCart();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [zoom, setZoom] = useState({ x: 50, y: 50, visible: false });
   const modalRef = useRef(null);
+  const imageWrapRef = useRef(null);
 
   const imageList = modalProduct ? getProductImageList(modalProduct) : [];
   const hasMultipleImages = imageList.length > 1;
+  const mainImageSrc = imageList[selectedImageIndex] || imageList[0];
+
+  const handleImageMouseMove = (e) => {
+    const el = imageWrapRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoom({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)), visible: true });
+  };
+
+  const handleImageMouseLeave = () => setZoom((z) => ({ ...z, visible: false }));
 
   useEffect(() => {
     setSelectedImageIndex(0);
@@ -79,16 +93,16 @@ export function ProductModal() {
 
   return (
     <div
-      className={`fixed inset-0 bg-white z-[70] overflow-y-auto flex flex-col transition-all duration-300 ${
+      className={`fixed inset-0 bg-white z-[70] overflow-y-auto overflow-x-hidden flex flex-col transition-all duration-300 ${
         modalProduct ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
       }`}
     >
       {modalProduct && (
         <div ref={modalRef}>
-          <div className="sticky top-0 bg-white/95 backdrop-blur-md px-6 py-4 border-b flex justify-between items-center z-10">
+          <div className="sticky top-0 bg-white/95 backdrop-blur-md px-4 sm:px-6 py-4 border-b border-gray-100 flex justify-between items-center z-10">
             <button
               onClick={closeModal}
-              className="text-gray-400 hover:text-black flex items-center gap-2 text-xs uppercase tracking-widest font-bold transition"
+              className="flex-shrink-0 p-2 -ml-2 text-gray-400 hover:text-black flex items-center gap-2 text-xs uppercase tracking-widest font-bold transition rounded-lg hover:bg-gray-100"
             >
               <ArrowLeft className="w-4 h-4" /> Catálogo
             </button>
@@ -113,25 +127,42 @@ export function ProductModal() {
               </span>
             </Link>
           </div>
-          <nav aria-label="Navegação" className="max-w-6xl mx-auto px-4 pt-6 text-xs text-gray-500">
+          <nav aria-label="Navegação" className="w-full max-w-6xl mx-auto px-4 sm:px-6 pt-6 text-xs text-gray-500 min-w-0">
             <Link to="/" onClick={() => { closeModal(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand-purple">Início</Link>
             <span className="mx-2">/</span>
             <button type="button" onClick={closeModal} className="hover:text-brand-purple">Coleção</button>
             <span className="mx-2">/</span>
-            <span className="text-gray-700 font-medium">{modalProduct.name}</span>
+            <span className="text-gray-700 font-medium truncate max-w-[50vw] sm:max-w-none inline-block align-bottom">{modalProduct.name}</span>
           </nav>
-          <div className="max-w-6xl mx-auto px-4 py-10 md:py-16 flex flex-col md:flex-row gap-10 md:gap-16">
-            <div className="w-full md:w-1/2 flex-shrink-0 space-y-3">
-              <img
-                src={imageList[selectedImageIndex] || imageList[0]}
-                alt={modalProduct.name}
-                className="w-full rounded-2xl shadow-xl object-cover aspect-[3/4]"
-                fetchPriority="high"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = PLACEHOLDER_IMAGE;
-                }}
-              />
+          <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-16 relative flex flex-col md:flex-row gap-10 md:gap-16 box-border">
+            <div className="w-full md:w-1/2 flex-shrink-0 min-w-0 space-y-3">
+              <div className="relative">
+                <div
+                  ref={imageWrapRef}
+                  onMouseMove={handleImageMouseMove}
+                  onMouseLeave={handleImageMouseLeave}
+                  className="relative w-full rounded-2xl overflow-hidden bg-gray-100 aspect-[3/4]"
+                >
+                  <img
+                    src={mainImageSrc}
+                    alt={modalProduct.name}
+                    className="w-full h-full object-cover pointer-events-none transition-transform duration-150 ease-out"
+                    style={
+                      zoom.visible
+                        ? {
+                            transform: `scale(2.8)`,
+                            transformOrigin: `${zoom.x}% ${zoom.y}%`,
+                          }
+                        : undefined
+                    }
+                    fetchPriority="high"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = PLACEHOLDER_IMAGE;
+                    }}
+                  />
+                </div>
+              </div>
               {hasMultipleImages && (
                 <div className="flex gap-2 justify-center flex-wrap">
                   {imageList.map((src, i) => (
@@ -160,7 +191,7 @@ export function ProductModal() {
                 </div>
               )}
             </div>
-        <div className="w-full md:w-1/2 space-y-7">
+        <div className="w-full md:w-1/2 min-w-0 flex flex-col space-y-7">
           <div>
             <span className="text-brand-purple text-[10px] font-bold uppercase tracking-[0.25em]">
               {modalProduct.categoryLabel}

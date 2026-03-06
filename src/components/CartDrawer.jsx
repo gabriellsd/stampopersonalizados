@@ -55,8 +55,8 @@ export function CartDrawer() {
         aria-modal="true"
         aria-label="Carrinho de compras"
       >
-        <div className="px-6 py-5 border-b flex justify-between items-center">
-          <div>
+        <div className="px-4 sm:px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+          <div className="min-w-0">
             <h2 className="text-lg font-bold">Meu Pedido</h2>
             <p className="text-xs text-gray-400 mt-0.5">
               {cartTotalQty} {cartTotalQty === 1 ? 'peça' : 'peças'}
@@ -65,12 +65,12 @@ export function CartDrawer() {
           <button
             onClick={() => setCartOpen(false)}
             aria-label="Fechar carrinho"
-            className="text-gray-400 hover:text-black text-2xl p-1"
+            className="flex-shrink-0 p-2 text-gray-400 hover:text-black transition rounded-lg hover:bg-gray-100"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 min-w-0">
           {!cart.length ? (
             <div className="flex flex-col items-center justify-center h-full text-center py-16">
               <ShoppingBag className="w-14 h-14 text-gray-200 mb-4" />
@@ -122,7 +122,7 @@ export function CartDrawer() {
             </div>
           )}
         </div>
-        <div className="px-6 py-5 border-t bg-gray-50 space-y-4">
+        <div className="px-4 sm:px-6 py-5 border-t border-gray-100 bg-gray-50 space-y-4">
           <div className="flex justify-between items-baseline">
             <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Total Estimado</span>
             <span className="text-2xl font-bold">R$ {fmt(cartTotalPrice)}</span>
