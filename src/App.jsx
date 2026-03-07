@@ -19,11 +19,13 @@ import { FaqSection } from './components/FaqSection';
 import { InstagramSection } from './components/InstagramSection';
 import { PageMeta } from './components/PageMeta';
 import { Analytics } from './components/Analytics';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 const PersonalizadasPage = lazy(() => import('./pages/PersonalizadasPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
+const ExchangeDeliveryPage = lazy(() => import('./pages/ExchangeDeliveryPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function HomePage() {
@@ -52,12 +54,13 @@ function PageTransition({ children }) {
 
 export default function App() {
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <ScrollToTop />
-      <Analytics />
-      <CartProvider>
-        <FavoritesProvider>
-          <Routes>
+    <ErrorBoundary>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <ScrollToTop />
+        <Analytics />
+        <CartProvider>
+          <FavoritesProvider>
+            <Routes>
             <Route
               path="/personalizadas"
               element={
@@ -103,6 +106,17 @@ export default function App() {
               }
             />
             <Route
+              path="/trocas-e-entrega"
+              element={
+                <Layout>
+                  <PageMeta title="Trocas e Entrega | Stampô" description="Política de entrega, prazos, frete grátis e como solicitar troca ou devolução." ogImage="/logo/logo.png" />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><span className="animate-pulse text-brand-purple">Carregando...</span></div>}>
+                    <PageTransition><ExchangeDeliveryPage /></PageTransition>
+                  </Suspense>
+                </Layout>
+              }
+            />
+            <Route
               path="/"
               element={
                 <Layout>
@@ -120,9 +134,10 @@ export default function App() {
                 </Layout>
               }
             />
-          </Routes>
-        </FavoritesProvider>
-      </CartProvider>
-    </BrowserRouter>
+            </Routes>
+          </FavoritesProvider>
+        </CartProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

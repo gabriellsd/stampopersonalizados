@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
-import { getProductImageList, PLACEHOLDER_IMAGE } from '../utils/product';
+import { getProductImageList } from '../utils/product';
 import { fmt } from '../utils/format';
 import { useFavorites } from '../context/FavoritesContext';
+import { ImageWithLoader } from './ImageWithLoader';
 
 const CYCLE_MS = 3500;
 
@@ -37,15 +38,12 @@ export function ProductCard({ product, onOpen }) {
         className="w-full text-left"
       >
       <div className="aspect-[4/5] overflow-hidden bg-gray-100 relative">
-        <img
+        <ImageWithLoader
           src={imageList[imageIndex]}
           alt={product.name}
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = PLACEHOLDER_IMAGE;
-          }}
+          wrapperClassName="!min-h-0 absolute inset-0"
         />
         {product.badge === 'novo' && (
           <span className="absolute top-3 left-3 bg-gray-900 text-white text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded">

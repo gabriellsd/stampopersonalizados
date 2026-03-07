@@ -231,6 +231,7 @@ export function Layout({ children }) {
                     <Link to={getNavHref(link)} className="text-brand-purple-light hover:text-white transition">{link.name}</Link>
                   </li>
                 ))}
+                <li><Link to="/trocas-e-entrega" className="text-brand-purple-light hover:text-white transition">Trocas e entrega</Link></li>
                 <li><Link to="/privacidade" className="text-brand-purple-light hover:text-white transition">Privacidade</Link></li>
                 <li><Link to="/termos" className="text-brand-purple-light hover:text-white transition">Termos de uso</Link></li>
               </ul>
