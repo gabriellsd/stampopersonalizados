@@ -33,7 +33,7 @@ function HomePage() {
     <div className="flex flex-col min-h-[calc(100vh-3.5rem)]">
       <BenefitsStrip />
       <Hero />
-      <div className="bg-brand-orange-light/50 flex-1">
+      <div className="bg-brand-orange-light/50">
         <Collection />
         <AboutSection />
         <FaqSection />

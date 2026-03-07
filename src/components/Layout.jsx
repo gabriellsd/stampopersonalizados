@@ -52,6 +52,13 @@ export function Layout({ children }) {
     };
   }, [isMenuOpen]);
 
+  /* Uma só barra de rolagem: trava o body quando o modal de produto está aberto */
+  useEffect(() => {
+    if (modalProduct) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => { document.body.style.overflow = ''; };
+  }, [modalProduct]);
+
   const handleNavClick = (link) => {
     if (location.pathname === link.path) {
       if (link.hash) {
@@ -75,7 +82,7 @@ export function Layout({ children }) {
   }, [location.pathname, location.hash]);
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex flex-col">
+    <div className="min-h-screen bg-white text-gray-900 flex flex-col overflow-visible">
       <a
         href="#main-content"
         className="absolute -left-[10000px] top-4 z-[100] px-4 py-2 bg-brand-purple text-white rounded font-medium text-sm focus:left-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-purple transition-[left]"
@@ -189,7 +196,7 @@ export function Layout({ children }) {
       <div id="a11y-announcer" aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement}
       </div>
-      <main id="main-content" className="pt-14 flex-1 flex flex-col" tabIndex={-1}>
+      <main id="main-content" className="pt-14 flex-1 flex flex-col overflow-visible" tabIndex={-1}>
         {children}
       </main>
 
