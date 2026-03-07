@@ -32,19 +32,54 @@ export function ProductModal() {
   const hasMultipleImages = imageList.length > 1;
   const mainImageSrc = imageList[selectedImageIndex] || imageList[0];
 
-  const handleImageMouseMove = (e) => {
+  const updateZoomFromPosition = (clientX, clientY) => {
     const el = imageWrapRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setZoom({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)), visible: true });
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    const y = ((clientY - rect.top) / rect.height) * 100;
+    setZoom({
+      x: Math.max(0, Math.min(100, x)),
+      y: Math.max(0, Math.min(100, y)),
+      visible: true,
+    });
+  };
+
+  const handleImageMouseMove = (e) => {
+    updateZoomFromPosition(e.clientX, e.clientY);
   };
 
   const handleImageMouseLeave = () => setZoom((z) => ({ ...z, visible: false }));
 
+  const handleImageTouchStart = (e) => {
+    if (e.touches.length === 0) return;
+    updateZoomFromPosition(e.touches[0].clientX, e.touches[0].clientY);
+  };
+
+  const handleImageTouchEnd = () => setZoom((z) => ({ ...z, visible: false }));
+
   useEffect(() => {
     setSelectedImageIndex(0);
+  }, [modalProduct?.id]);
+
+  /* Touch: segurar e arrastar para zoom (precisa passive: false para preventDefault) */
+  useEffect(() => {
+    const el = imageWrapRef.current;
+    if (!el || !modalProduct) return;
+    const onTouchMove = (e) => {
+      if (e.touches.length === 0) return;
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const x = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
+      const y = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
+      setZoom({
+        x: Math.max(0, Math.min(100, x)),
+        y: Math.max(0, Math.min(100, y)),
+        visible: true,
+      });
+    };
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    return () => el.removeEventListener('touchmove', onTouchMove);
   }, [modalProduct?.id]);
 
   useEffect(() => {
@@ -142,7 +177,10 @@ export function ProductModal() {
                   ref={imageWrapRef}
                   onMouseMove={handleImageMouseMove}
                   onMouseLeave={handleImageMouseLeave}
-                  className="relative w-full rounded-2xl overflow-hidden bg-gray-100 aspect-[3/4]"
+                  onTouchStart={handleImageTouchStart}
+                  onTouchEnd={handleImageTouchEnd}
+                  onTouchCancel={handleImageTouchEnd}
+                  className="relative w-full rounded-2xl overflow-hidden bg-gray-100 aspect-[3/4] touch-none"
                 >
                   <ImageWithLoader
                     src={mainImageSrc}
